@@ -1,5 +1,5 @@
 public class Veiculo {
-    // Atributos privados da classe
+    // Atributos privados da classe, representando as propriedades de um veículo
     private String modelo;
     private String placa;
     private String problema;
@@ -7,13 +7,13 @@ public class Veiculo {
 
     // Construtor que recebe o modelo e a placa do veículo, inicializando os outros atributos com valores padrão
     public Veiculo(String modelo, String placa) {
-        this(modelo, placa, "", 0.0); // Chamando o construtor principal
+        this(modelo, placa, "", 0.0); // Chamando o construtor principal, passando valores padrão para problema e valorDoServico
     }
 
     // Construtor principal que permite inicializar todos os atributos da classe
     public Veiculo(String modelo, String placa, String problema, double valorDoServico) {
         this.modelo = modelo;
-        this.placa = (placa != null) ? placa : ""; // Verifica se a placa não é nula antes de atribuir
+        this.placa = (placa != null) ? placa : ""; // Verifica se a placa não é nula antes de atribuir um valor
         this.problema = problema;
         this.valorDoServico = valorDoServico;
     }
