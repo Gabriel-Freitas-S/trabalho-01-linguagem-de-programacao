@@ -1,119 +1,116 @@
-import java.util.Scanner;
+import javax.swing.JOptionPane;
 
-// Classe principal do sistema da Oficina
+// Classe principal Oficina
 public class Oficina {
-
-    // Cria uma instância estática de VetVeiculo que gerenciará os veículos da oficina
+    // Instância estática de VetVeiculo que será usada para armazenar os veículos.
     private static final VetVeiculo vetVeiculos = new VetVeiculo();
 
-    // Método principal que inicia o programa e exibe o menu
+    // Método principal que inicia o programa
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in); // Scanner para leitura das entradas do usuário
-
-        // Loop infinito que só será interrompido quando o usuário selecionar sair (opção 5)
         while (true) {
-            // Exibe o menu de opções para o usuário
-            System.out.println("\nMenu:");
-            System.out.println("1. Adicionar um novo veículo à oficina.");
-            System.out.println("2. Pesquisar um veículo pela placa e mostrar na tela as suas informações.");
-            System.out.println("3. Remover um veículo da oficina pela placa.");
-            System.out.println("4. Listar todos os veículos (somente o modelo e a placa) que estão no sistema da oficina.");
-            System.out.println("5. Sair do programa.");
-            System.out.print("Escolha uma opção: ");
-
-            // Lê a opção escolhida pelo usuário
-            int opcao = scanner.nextInt();
-            scanner.nextLine(); // Consome a nova linha para evitar problemas de leitura
-
-            // Switch para execução da ação baseada na opção escolhida
+            // Opções do menu que serão exibidas ao usuário
+            String[] options = { "Adicionar", "Pesquisar", "Remover", "Listar", "Sair" };
+            // Exibe a caixa de diálogo com as opções do menu e armazena a escolha do usuário
+            int opcao = JOptionPane.showOptionDialog(null, "Menu:", "Oficina",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            // Verifica a opção escolhida pelo usuário e chama o método correspondente
             switch (opcao) {
+                case 0:
+                    adicionarVeiculo();
+                    break;
                 case 1:
-                    adicionarVeiculo(scanner); // Chama o método para adicionar um veículo
+                    pesquisarVeiculo();
                     break;
                 case 2:
-                    pesquisarVeiculo(scanner); // Chama o método para pesquisar um veículo
+                    removerVeiculo();
                     break;
                 case 3:
-                    removerVeiculo(scanner); // Chama o método para remover um veículo
+                    listarVeiculos();
                     break;
                 case 4:
-                    listarVeiculos(); // Chama o método para listar todos os veículos
-                    break;
-                case 5:
-                    System.out.println("Saindo do programa..."); // Mensagem de saída
-                    scanner.close(); // Fecha o scanner
-                    return; // Encerra o programa
+                    // Mensagem de saída do programa e finaliza o loop
+                    JOptionPane.showMessageDialog(null, "Saindo do programa...");
+                    return;
                 default:
-                    System.out.println("Opção inválida! Tente novamente."); // Mensagem de opção inválida
+                    // Mensagem para opção inválida
+                    JOptionPane.showMessageDialog(null, "Opção inválida! Tente novamente.");
             }
         }
     }
 
-    // Método para adicionar um novo veículo à oficina
-    private static void adicionarVeiculo(Scanner scanner) {
-        System.out.print("Digite o modelo do veículo: ");
-        String modelo = scanner.nextLine(); // Lê o modelo do veículo
-        System.out.print("Digite a placa do veículo: ");
-        String placa = scanner.nextLine(); // Lê a placa do veículo
-
-        // Cria uma nova instância do veículo com o modelo e placa lidos
-        Veiculo veiculo = new Veiculo(modelo, placa);
-
-        // Tenta inserir o veículo no vetor de veículos
+    // Método para adicionar um veículo
+    private static void adicionarVeiculo() {
+        // Solicita ao usuário o modelo do veículo
+        String modelo = InOut.leString("Digite o modelo do veículo:");
+        // Solicita ao usuário a placa do veículo
+        String placa = InOut.leString("Digite a placa do veículo:");
+        // Solicita ao usuário o problema do veículo
+        String problema = InOut.leString("Digite o problema do veículo:");
+        // Solicita ao usuário o valor do serviço
+        double valorDoServico = InOut.leDouble("Digite o valor do serviço:");
+        // Cria uma nova instância de Veiculo com os dados fornecidos
+        Veiculo veiculo = new Veiculo(modelo, placa, problema, valorDoServico);
+        // Tenta inserir o veículo no VetVeiculo e verifica se já existe
         boolean inserido = vetVeiculos.insereVeiculo(veiculo);
+        // Exibe mensagem ao usuário informando se o veículo foi adicionado ou se já existia um veículo com a mesma placa
         if (!inserido) {
-            System.out.println("Veículo com esta placa já existe."); // Mensagem de erro se o veículo já existe
+            JOptionPane.showMessageDialog(null, "Veículo com esta placa já existe.");
         } else {
-            System.out.println("Veículo adicionado com sucesso."); // Mensagem de sucesso
+            JOptionPane.showMessageDialog(null, "Veículo adicionado com sucesso.");
         }
     }
 
-    // Método para pesquisar um veículo pela placa e mostrar suas informações
-    private static void pesquisarVeiculo(Scanner scanner) {
-        System.out.print("Digite a placa do veículo: ");
-        String placa = scanner.nextLine(); // Lê a placa do veículo
-
-        // Procura o veículo no vetor de veículos
+    // Método para pesquisar um veículo
+    private static void pesquisarVeiculo() {
+        // Solicita ao usuário a placa do veículo a ser pesquisado
+        String placa = InOut.leString("Digite a placa do veículo:");
+        // Pesquisa o veículo pelo número da placa
         int posicao = vetVeiculos.pesquisaVeiculo(placa);
+        // Verifica se o veículo foi encontrado
         if (posicao != -1) {
-            // Se o veículo for encontrado, obtém o veículo através da posição retornada
+            // Obtém o veículo na posição encontrada
             Veiculo veiculoEncontrado = vetVeiculos.getPos(posicao);
+            // Se o veículo foi encontrado, exibe as informações dele
             if (veiculoEncontrado != null) {
-                // Exibe as informações do veículo encontrado
-                System.out.println("Modelo: " + veiculoEncontrado.getModelo());
-                System.out.println("Placa: " + veiculoEncontrado.getPlaca());
-                System.out.println("Problema: " + veiculoEncontrado.getProblema());
-                System.out.println("Valor do Serviço: " + veiculoEncontrado.getValorDoServico());
+                JOptionPane.showMessageDialog(null,
+                        "Modelo: " + veiculoEncontrado.getModelo() + "\n" +
+                                "Placa: " + veiculoEncontrado.getPlaca() + "\n" +
+                                "Problema: " + veiculoEncontrado.getProblema() + "\n" +
+                                "Valor do Serviço: " + veiculoEncontrado.getValorDoServico());
             }
         } else {
-            System.out.println("Veículo não encontrado."); // Mensagem se o veículo não for encontrado
+            // Exibe mensagem informando que o veículo não foi encontrado
+            JOptionPane.showMessageDialog(null, "Veículo não encontrado.");
         }
     }
 
-    // Método para remover um veículo da oficina pela placa
-    private static void removerVeiculo(Scanner scanner) {
-        System.out.print("Digite a placa do veículo a ser removido: ");
-        String placa = scanner.nextLine(); // Lê a placa do veículo
-
-        // Tenta remover o veículo do vetor de veículos
+    // Método para remover um veículo
+    private static void removerVeiculo() {
+        // Solicita ao usuário a placa do veículo a ser removido
+        String placa = InOut.leString("Digite a placa do veículo a ser removido:");
+        // Tenta remover o veículo pelo número da placa
         boolean removido = vetVeiculos.removeVeiculo(placa);
+        // Exibe mensagem ao usuário informando se o veículo foi removido ou não encontrado
         if (removido) {
-            System.out.println("Veículo removido com sucesso."); // Mensagem de sucesso se o veículo for removido
+            JOptionPane.showMessageDialog(null, "Veículo removido com sucesso.");
         } else {
-            System.out.println("Veículo não encontrado."); // Mensagem se o veículo não for encontrado
+            JOptionPane.showMessageDialog(null, "Veículo não encontrado.");
         }
     }
 
-    // Método para listar todos os veículos no sistema da oficina
+    // Método para listar todos os veículos
     private static void listarVeiculos() {
-        System.out.println("Veículos cadastrados:");
-
-        // Loop para exibir todos os veículos do vetor de veículos
+        // StringBuilder para armazenar a lista de veículos
+        StringBuilder lista = new StringBuilder("Veículos cadastrados:\n");
+        // Percorre todos os veículos cadastrados
         for (int i = 0; i < vetVeiculos.getQuantidadePreenchida(); i++) {
             Veiculo v = vetVeiculos.getPos(i);
+            // Se o veículo não for nulo, adiciona suas informações à lista
             if (v != null) {
-                System.out.println("Modelo: " + v.getModelo() + ", Placa: " + v.getPlaca());
+                lista.append("Modelo: ").append(v.getModelo()).append(", Placa: ").append(v.getPlaca()).append("\n");
             }
         }
+        // Exibe a lista de veículos cadastrados
+        JOptionPane.showMessageDialog(null, lista.toString());
     }
 }
